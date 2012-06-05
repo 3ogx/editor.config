@@ -1,0 +1,4 @@
+editor.config
+=============
+
+editor.config
