@@ -1,0 +1,3 @@
+#name : (user's email)
+# --
+`(replace-regexp-in-string "@" "@gmail.com" user-mail-address)`
