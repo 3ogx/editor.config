@@ -1,0 +1,6 @@
+.DS_Store
+.emacs.desktop
+elpa
+themes
+site-lisp
+auto-save-list

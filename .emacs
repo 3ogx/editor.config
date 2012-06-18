@@ -1,12 +1,12 @@
 ;; -*-mode:elisp-*-
 ;; 终端为utf-8
-(set-language-environment "UTF-8")
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-(set-clipboard-coding-system 'utf-8)
-(set-buffer-file-coding-system 'utf-8)
-(set-selection-coding-system 'utf-8)
-(modify-coding-system-alist 'process "*" 'utf-8)
+;; (set-language-environment "UTF-8")
+;; (set-terminal-coding-system 'utf-8)
+;; (set-keyboard-coding-system 'utf-8)
+;; (set-clipboard-coding-system 'utf-8)
+;; (set-buffer-file-coding-system 'utf-8)
+;; (set-selection-coding-system 'utf-8)
+;; (modify-coding-system-alist 'process "*" 'utf-8)
 
 (setq default-directory "~/")
 (defconst lisp-path "~/elisp/")
@@ -28,13 +28,13 @@
 (require 'hippie-exp)
 (setq hippie-expand-try-functions-list
       '(try-expand-dabbrev
-	try-expand-dabbrev-all-buffers
-	try-expand-dabbrev-from-kill
-	try-complete-file-name-partially
-	try-complete-file-name
-	try-complete-lisp-symbol-partially
-	try-complete-lisp-symbol
-	try-expand-whole-kill))
+    try-expand-dabbrev-all-buffers
+    try-expand-dabbrev-from-kill
+    try-complete-file-name-partially
+    try-complete-file-name
+    try-complete-lisp-symbol-partially
+    try-complete-lisp-symbol
+    try-expand-whole-kill))
 
 ;; 自动匹配括号
 ;; see http://www.builder.com.cn/2008/0212/733323.shtml
@@ -54,11 +54,7 @@
 (add-to-list 'ac-dictionary-directories "~/elisp/auto-complete/ac-dict")
 (ac-config-default)
 
-(setq default-buffer-file-coding-system 'utf-8)
 (setq column-number-mode t)
-
-;; php-mode
-(require 'php-mode)
 
 ;; color-theme
 (require 'color-theme)
@@ -73,7 +69,7 @@
 
 
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
-(set c-basic-offset 4)
+;; (set c-basic-offset 4)
 (c-set-offset 'case-label '+)
 
 ;; 顯示行號
@@ -89,17 +85,17 @@
 (require 'hippie-exp)
 (setq hippie-expand-try-functions-list
       '(try-expand-dabbrev
-	try-expand-dabbrev-all-buffers
-	try-expand-dabbrev-from-kill
-	try-complete-file-name-partially
-	try-complete-file-name
-	try-complete-lisp-symbol-partially
-	try-complete-lisp-symbol
-	try-expand-whole-kill))
+    try-expand-dabbrev-all-buffers
+    try-expand-dabbrev-from-kill
+    try-complete-file-name-partially
+    try-complete-file-name
+    try-complete-lisp-symbol-partially
+    try-complete-lisp-symbol
+    try-expand-whole-kill))
 
 
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
-(set c-basic-offset 4)
+;; (set c-basic-offset 4)
 (c-set-offset 'case-label '+)
 
 ;;yasnippet 模板
@@ -109,10 +105,10 @@
 (yas/load-directory "~/elisp/yasnippet-0.6.1c/snippets")
 
 ;; fullscreen
-(defun fullscreen()
-  (interactive)
-  (set-frame-parameter nil 'fullscreen
-		       (if (frame-parameter nil 'fullscreen) nil 'fullboth)))
+;; (defun fullscreen()
+;;   (interactive)
+;;   (set-frame-parameter nil 'fullscreen
+;;                (if (frame-parameter nil 'fullscreen) nil 'fullboth)))
 
 ;; 總是不顯示工具欄
 (tool-bar-mode -1)
@@ -224,7 +220,9 @@
 ;; 除了在 Dired buffer 中，基本都可以用来 other-window。
 (global-set-key (kbd "M-o") 'other-window)
 
-(global-set-key (kbd "C-SPC") 'set-mark-command)
+;; 取消默認的 C-@
+(global-set-key (kbd "C-@") nil)
+(global-set-key (kbd "C-\\") 'set-mark-command)
 
 ;; 很多文件的时候，在几个文件中跳转到曾经用过的 mark 地方。
 (global-set-key (kbd "C-c C-z") 'pop-global-mark)
