@@ -1,7 +1,32 @@
-;; -*-mode:elisp-*-
+;; -*-mode:lisp-*-
+
+;; record start time
+(defconst *start-time* (current-time))
+
+;; by default refresh package List if t
+;; (defvar *refresh-package-list* t)
+(defvar *refresh-package-list* nil)
+
+;; set package manager
+(require 'package)
+(add-to-list 'package-archives
+             '("elpa" . "http://tromey.com/elpa/"))
+(add-to-list 'package-archives
+             '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/"))
+(package-initialize)
+(when *refresh-package-list*
+  (package-refresh-contents))
+
 
 ;; (add-to-list 'load-path "~/.emacs.d/themes")
-(load-theme 'deeper-blue)
+;; (load-theme 'deeper-blue t)
+(unless (member 'zenburn (custom-available-themes))
+  (package-install 'zenburn-theme))
+(load-theme 'zenburn t)
+
+;; (setq-default linum-mode t)
 
 ;; 設置command鍵為meta
 (setq mac-command-modifier 'meta)
@@ -16,22 +41,23 @@
 (setq ring-bell-function 'ignore)
 
 ;; 禁用产生备份文件
+(setq make-backup-files nil)
 (setq-default make-backup-files nil)
 (setq inhibit-startup-message t)
 
 ;; 自动匹配括号
-(setq skeleton-pair t)
-(local-set-key (kbd "[") 'skeleton-pair-insert-maybe)
-(local-set-key (kbd "(") 'skeleton-pair-insert-maybe)
-(local-set-key (kbd "{") 'skeleton-pair-insert-maybe)
-(local-set-key (kbd "<") 'skeleton-pair-insert-maybe)
-(local-set-key (kbd "\"") 'skeleton-pair-insert-maybe)
+;; (setq skeleton-pair t)
+;; (local-set-key (kbd "[") 'skeleton-pair-insert-maybe)
+;; (local-set-key (kbd "(") 'skeleton-pair-insert-maybe)
+;; (local-set-key (kbd "{") 'skeleton-pair-insert-maybe)
+;; (local-set-key (kbd "<") 'skeleton-pair-insert-maybe)
+;; (local-set-key (kbd "\"") 'skeleton-pair-insert-maybe)
 
 
 ;; (add-hook 'text-mode-hook 'turn-on-auto-fill)
 
 ;; goto-line
-(global-set-key (kbd "M-l") 'goto-line)
+;; (global-set-key (kbd "M-l") 'goto-line)
 
 ;; 默認不顯示工具欄
 (tool-bar-mode -1)
@@ -46,7 +72,16 @@
 ;; 標題顯示buffer，爾不是用戶
 (setq frame-title-format "Emacs@%b")
 
+(setq c-set-style 4)
+(setq c-basic-offset 4)
+
 ;;用空格代替tab
+;; 如果出現2個空格或者8個空格的，請運行下面這句
+;; 然後增加一行4
+;; (customize-variable (quote tab-stop-list))
+(setq indent-tabs-mode t)
+(setq default-tab-width 4)
+;; (setq-default indent-tabs-mode t)
 (setq-default tab-width 4)
 (setq-default indent-tabs-mode nil)
 
@@ -111,7 +146,7 @@
 
 ;; 取消默認的 C-@
 (global-set-key (kbd "C-@") nil)
-(global-set-key (kbd "C-\\") 'set-mark-command)
+(global-set-key (kbd "C-;") 'set-mark-command)
 
 ;; 很多文件的时候，在几个文件中跳转到曾经用过的 mark 地方。
 (global-set-key (kbd "C-c C-z") 'pop-global-mark)
@@ -134,9 +169,61 @@
 ;; 注釋一段
 (global-set-key (kbd "C-M-;") 'comment-or-uncomment-region)
 
+;; 打开鼠标所在位置的链接
+(global-set-key (kbd "C-c o") 'goto-address-at-mouse)
+(global-set-key (kbd "C-c O") 'goto-address-at-point)
+
+;; 文本查找
+(global-set-key (kbd "C-c f") 'occur)
+(global-set-key (kbd "C-c F") 'occur-next)
+
 ;; 在行首 C-k 时，同时删除该行。
-(setq-default kill-whole-line t)
-(setq resize-mini-windows nil)
+;; (setq-default kill-whole-line t)
+;; (setq resize-mini-windows nil)
 
+;; maximize emacs window
+(when (not (require 'maxframe nil t))
+  (package-install 'maxframe))
+(add-hook 'window-setup-hook 'maximize-frame t)
 
+;; load file cost time
+;; (message ".emacs loaded in %s seconds" (mapconcat 'int-to-string (rest (time-since *start-time*)) "."))
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(tab-stop-list (quote (4 8 16 24 32 40 48 56 64 72 80 88 96 104 112 120))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+;; Copy And Parse Current Line
+(defun duplicate-line (arg)
+  (interactive "*p")
+  (setq buffer-undo-list (cons (point) buffer-undo-list))
+  (let ((bol (save-excursion (beginning-of-line) (point)))
+        eol)
+    (save-excursion
+      (end-of-line)
+      (setq eol (point))
+
+      (let ((line (buffer-substring bol eol))
+            (buffer-undo-list t)
+            (count arg))
+        (while (> count 0)
+          (newline)
+          (insert line)
+          (setq count(1- count)))
+        )
+      (setq buffer-undo-list (cons (cons eol (point)) buffer-undo-list)))
+    )
+  (next-line arg))
+(global-set-key (kbd "C-:") 'duplicate-line)
+
+(provide 'emacs)
 ;; vim: ft=lisp

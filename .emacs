@@ -255,4 +255,11 @@
 (setq auto-mode-alist
       (cons '("\\.md" . markdown-mode) auto-mode-alist))
 
+;; hide
+(defun hide-ctrl-m()
+  (interactive)
+  (setq buffer-display-table (make-display-table))
+  (aset buffer-display-table ?/ []))
+(global-set-key (kbd "C-c m") 'hide-ctrl-m)
+
 ;; vim: ft=lisp
