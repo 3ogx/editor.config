@@ -1,4 +1,5 @@
 ;; -*-mode:lisp-*-
+;; Time-stamp: "2014-06-30 22:16:44 beiwei"
 
 ;; record start time
 (defconst *start-time* (current-time))
@@ -27,6 +28,7 @@
 (load-theme 'zenburn t)
 
 ;; (setq-default linum-mode t)
+;; Display line Number
 
 ;; 設置command鍵為meta
 (setq mac-command-modifier 'meta)
@@ -115,7 +117,8 @@
 
 
 ;; 設置默認字體
-(set-default-font "-apple-monaco-medium-r-normal--18-140-72-72-m-140-mac-roman")
+;; (set-default-font "-apple-monaco-medium-r-normal--12-140-72-72-m-140-mac-roman")
+(set-default-font "-apple-Comic_Sans_MS-bold-normal-normal-16-16-*-*-*-p-0-iso10646-1")
 
 ;; 方便的 electric-buffer-list 執行
 ;; 之后：
@@ -177,6 +180,8 @@
 (global-set-key (kbd "C-c f") 'occur)
 (global-set-key (kbd "C-c F") 'occur-next)
 
+(global-set-key (kbd "M-[") 'next-buffer)
+(global-set-key (kbd "M-]") 'previous-buffer)
 ;; 在行首 C-k 时，同时删除该行。
 ;; (setq-default kill-whole-line t)
 ;; (setq resize-mini-windows nil)
@@ -224,6 +229,80 @@
     )
   (next-line arg))
 (global-set-key (kbd "C-:") 'duplicate-line)
+
+;; ORG MODE
+(setq-default org-mode t)
+(setq org-puslish-use-timestamps-flag nil)
+(setq org-publish-project-alist
+      '(("org"
+         :base-directory "~/Sites/org/"
+         :base-extension "org"
+         :publishing-directory "~/Sites/public/public_html/"
+         :publishing-function org-html-publish-to-html
+         :headline-level 3
+         :section-numbers nil
+         :with-toc nil
+         :html-head ""
+         :html-preamble t)
+
+        ("images"
+         :base-directory "~/Sites/org/images/"
+         :base-extension "jpg\\|gif\\|png"
+         :publishing-directory "~/Sites/public/public_html/images/"
+         :publishing-function org-publish-attachment)
+
+        ("other"
+         :base-directory "~/Sites/org/other/"
+         :base-extension "css\\|el\\|js"
+         :publishing-directory "~/Sites/public/public_html/other/"
+         :publishing-function org-publish-attachment)
+
+        ("website" :components ("org" "images" "other")))
+      )
+
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "DOING" "WAIT(w@/!)" "|" "DONE(d!)" "DELEGATED(e!)")
+        (sequence "REPORT(r!)" "BUG" "KNOWNCAUSE" "|" "FIXED(f@/!)")
+        (sequence "|" "CANCELED(c@)")))
+(setq org-todo-keywords-faces
+     '(("TODO" . org-waring) ("DOING" . "yellow")
+       ("CANCELED" .(:foreground "blue" :weight bold))))
+(setq org-log-done 'time)
+
+(defun org-summary-todo (n-done n-not-done)
+  (let (org-log-done org-log-states)
+    (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
+(add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
+
+;; load configure file at other window
+(global-set-key (kbd "<f6>") '(lambda ()
+                                (interactive)
+                                (find-file-other-window "~/.emacs")))
+(global-set-key (kbd "<f7>") 're-builder)
+(global-set-key (kbd "<f8>") 'multi-occur-in-matching-buffers)
+
+(require 'org-gcal)
+
+;; Auto-start on any markup modes
+(require 'emmet-mode)
+(add-hook 'sgml-mode-hook 'emmet-mode)
+(add-hook 'html-mode-hook 'emmet-mode)
+(add-hook 'css-mode-hook  'emmet-mode)
+
+
+(add-hook 'before-save-hook  'time-stamp)
+
+;; Enable ecp
+(require 'ecb)
+(require 'ecb-autoloads)
+(setq ecb-auto-activate t)
+(setq ecb-auto-compatibility-check nil)
+(setq ecb-tip-of-day nil)
+(global-set-key (kbd "<M-up>") 'windmove-up)
+(global-set-key (kbd "<M-left>") 'windmove-left)
+(global-set-key (kbd "<M-right>") 'windmove-right)
+(global-set-key (kbd "<M-down>") 'windmove-down)
+(define-key global-map "\C-c0" 'ecb-restore-default-window-sizes)
 
 (provide 'emacs)
 ;; vim: ft=lisp

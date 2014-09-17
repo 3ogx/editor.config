@@ -9,8 +9,10 @@
 ;; (modify-coding-system-alist 'process "*" 'utf-8)
 
 (setq default-directory "~/")
-(defconst lisp-path "~/elisp/")
+(defconst lisp-path "~/.emacs.d/lisp/")
 (add-to-list 'load-path lisp-path)
+(add-to-list 'Info-default-directory-list "~/emacs/tramp/info/")
+(require 'tramp)
 
 ;; 去掉滚动条
 (set-scroll-bar-mode nil)
